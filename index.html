@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>戳戳DeepSeek 🐋</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#a8edea 0%,#b8d8ff 50%,#fed6e3 100%);
+  font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  overflow:hidden;position:relative;padding:20px;
+}
+.star{
+  position:absolute;font-size:22px;opacity:.55;pointer-events:none;
+  animation:float 6s ease-in-out infinite;
+}
+.star:nth-child(1){top:8%;left:12%;animation-delay:0s}
+.star:nth-child(2){top:18%;right:14%;animation-delay:1.5s}
+.star:nth-child(3){bottom:22%;left:18%;animation-delay:3s}
+.star:nth-child(4){bottom:12%;right:20%;animation-delay:4.5s}
+@keyframes float{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-14px) rotate(12deg)}
+}.whale-wrap{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;
+}
+#whale{
+  width:78vw;max-width:360px;height:auto;
+  display:block;cursor:pointer;
+  filter:drop-shadow(0 12px 24px rgba(80,140,200,.35));
+  animation:breathe 3.2s ease-in-out infinite;
+  transition:transform .12s ease;
+  user-select:none;
+}
+@keyframes breathe{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-10px) scale(1.02)}
+}
+#whale.pop{
+  animation:pop .55s cubic-bezier(.22,1.4,.4,1) forwards;
+}
+@keyframes pop{
+  0%{transform:scale(1)}
+  35%{transform:scale(.86,.78)}
+  65%{transform:scale(1.12,1.14)}
+  100%{transform:scale(1)}
+}
+.ciallo{
+  margin-top:6px;font-size:26px;font-weight:800;letter-spacing:2px;
+  background:linear-gradient(90deg,#ff9ec4,#8fb8ff,#7fe0c9);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}.counter-card{
+  margin-top:22px;z-index:2;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(10px);
+  border-radius:20px;padding:14px 30px;
+  box-shadow:0 8px 24px rgba(120,160,220,.28);
+  text-align:center;
+}
+.counter-label{font-size:14px;color:#6b7a99;letter-spacing:1px}
+#count{
+  font-size:42px;font-weight:900;line-height:1.1;
+  color:#4a8fe0;transition:color .2s,transform .2s;
+  display:inline-block;
+}
+#count.bump{transform:scale(1.25);color:#ff7aa8}
+.plus-one{
+  position:fixed;pointer-events:none;z-index:99;
+  font-size:24px;font-weight:900;color:#ff7aa8;
+  text-shadow:0 2px 6px rgba(255,120,170,.5);
+  animation:rise 1s ease-out forwards;
+}
+@keyframes rise{
+  0%{opacity:1;transform:translate(-50%,0) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-90px) scale(1.5)}
+}
+.spark{
+  position:fixed;pointer-events:none;z-index:98;
+  font-size:18px;animation:burst .8s ease-out forwards;
+}
+@keyframes burst{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.5)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.8) rotate(90deg)}
+}
+</style>
+</head>
+<body><span class="star">✨</span>
+
+<span class="star">⭐</span>
+<span class="star">🌟</span>
+<span class="star">💫</span>
+
+<div class="whale-wrap">
+  <img id="whale" src="whale_girl.png" alt="鲸鱼娘">
+  <div class="ciallo">ciallo ✨</div>
+</div>
+
+<div class="counter-card">
+  <div class="counter-label">戳戳次数</div>
+  <div id="count">0</div>
+</div>
+
+<script>(function(){
+  var whale = document.getElementById('whale');
+  var countEl = document.getElementById('count');
+  var n = 0;
+
+  function makePlusOne(x, y){
+    var p = document.createElement('div');
+    p.className = 'plus-one';
+    p.textContent = '+1';
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+    document.body.appendChild(p);
+    setTimeout(function(){ p.remove(); }, 1000);
+  }
+
+  function makeSparks(x, y){
+    var icons = ['✨','⭐','🌟','💫','⭐','✨'];
+    for(var i = 0; i < icons.length; i++){
+      (function(i){
+        var s = document.createElement('div');
+        s.className = 'spark';
+        s.textContent = icons[i];
+        var ang = (Math.PI * 2 / icons.length) * i;
+        var dist = 60 + Math.random() * 40;
+        s.style.left = (x + Math.cos(ang) * dist) + 'px';
+        s.style.top = (y + Math.sin(ang) * dist) + 'px';
+        document.body.appendChild(s);
+        setTimeout(function(){ s.remove(); }, 800);
+      })(i);
+    }
+  }
+
+  function tap(e){
+    var t = e.touches ? e.touches[0] : e;
+    var x = t.clientX, y = t.clientY;
+
+    whale.classList.remove('pop');
+    void whale.offsetWidth;
+    whale.classList.add('pop');
+
+    n++;
+    countEl.textContent = n;
+    countEl.classList.remove('bump');
+    void countEl.offsetWidth;
+    countEl.classList.add('bump');
+
+    makePlusOne(x, y);
+    makeSparks(x, y);
+
+    if(n % 10 === 0){
+      var c = document.createElement('div');
+      c.className = 'plus-one';
+      c.textContent = '🎉 ' + n + ' 下啦！';
+      c.style.left = '50%';
+      c.style.top = '30%';
+      c.style.fontSize = '28px';
+      document.body.appendChild(c);
+      setTimeout(function(){ c.remove(); }, 1000);
+    }
+  }
+
+  whale.addEventListener('click', tap);
+  whale.addEventListener('touchstart', function(e){
+    e.preventDefault();
+    tap(e);
+  }, { passive: false });
+})();
+</script>
+
+</body>
+</html>
